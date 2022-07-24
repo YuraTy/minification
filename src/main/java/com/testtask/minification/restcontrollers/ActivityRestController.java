@@ -21,17 +21,17 @@ public class ActivityRestController {
     @Autowired
     private UserLinkService userLinkService;
 
-    @GetMapping(value = "/allTransitions/{shortURL}")
+    @GetMapping(value = "/transitions/{shortURL}")
     @ResponseBody
     public Map<String, String> allTransitions(@PathVariable String shortURL) {
         UserLinkDTO userLinkDTO = userLinkService.findByShortURL(shortURL);
         int countTransitions = activityService.findByUserLinkId(ActivityDTO.builder().userLinkDTO(userLinkDTO).build()).size();
         Map<String, String> mapForJson = new HashMap<>();
-        mapForJson.put("allTransitions", String.valueOf(countTransitions));
+        mapForJson.put("amount-all-transitions", String.valueOf(countTransitions));
         return mapForJson;
     }
 
-    @GetMapping(value = "/findTransitionsByShortURLAndDate/{shortURL}/{dataTransition}")
+    @GetMapping(value = "/transitions-shorturl-date/{shortURL}/{dataTransition}")
     @ResponseBody
     public Map<String, String> transitionsByURLAndDate(@PathVariable String shortURL, @PathVariable LocalDateTime dataTransition) {
         UserLinkDTO userLinkDTO = userLinkService.findByShortURL(shortURL);
@@ -45,7 +45,7 @@ public class ActivityRestController {
         return mapForJson;
     }
 
-    @GetMapping(value = "/findByShortURLAndBrowser/{shortURL}/{browser}")
+    @GetMapping(value = "/transitions-shorturl-browser/{shortURL}/{browser}")
     @ResponseBody
     public Map<String, String> transitionsByShortURLAndBrowser(@PathVariable String shortURL, @PathVariable String browser) {
         UserLinkDTO userLinkDTO = userLinkService.findByShortURL(shortURL);
@@ -55,11 +55,11 @@ public class ActivityRestController {
                         .build())
                 .size();
         Map<String, String> mapForJson = new HashMap<>();
-        mapForJson.put("allTransitionsByShortURLAndBrowser", String.valueOf(countTransitions));
+        mapForJson.put("amount-transitions-shorturl-browser", String.valueOf(countTransitions));
         return mapForJson;
     }
 
-    @GetMapping(value = "/findByShortURLAndReferer/{shortURL}/{referer}")
+    @GetMapping(value = "/transitions-shorturl-referer/{shortURL}/{referer}")
     @ResponseBody
     public Map<String, String> transitionByShortURLAndReferer(@PathVariable String shortURL, @PathVariable String referer) {
         UserLinkDTO userLinkDTO = userLinkService.findByShortURL(shortURL);
@@ -69,7 +69,7 @@ public class ActivityRestController {
                         .build())
                 .size();
         Map<String, String> mapForJson = new HashMap<>();
-        mapForJson.put("allTransitionsByShortURLAndReferer", String.valueOf(countTransitions));
+        mapForJson.put("amount-transitions-shorturl-referer", String.valueOf(countTransitions));
         return mapForJson;
     }
 

@@ -12,19 +12,19 @@ public class UserLinkRestController {
     @Autowired
     private UserLinkService userLinkService;
 
-    @PutMapping(value = "/userLink")
+    @PutMapping(value = "/link")
     @ResponseBody
     public UserLinkDTO create(@RequestBody UserLinkDTO userLinkDTO) {
         return userLinkService.create(userLinkDTO);
     }
 
-    @PostMapping(value = "/userLink/{oldId}")
+    @PostMapping(value = "/link/{oldId}")
     @ResponseBody
     public UserLinkDTO update(@RequestBody UserLinkDTO userLinkDTONew,@PathVariable int oldId) {
         return userLinkService.update(oldId,userLinkDTONew);
     }
 
-    @DeleteMapping(value = "/userLink")
+    @DeleteMapping(value = "/link")
     @ResponseBody
     public void delete(@RequestBody UserLinkDTO userLinkDTO) {
         userLinkService.delete(userLinkDTO);
