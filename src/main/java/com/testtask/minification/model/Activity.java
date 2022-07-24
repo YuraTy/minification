@@ -1,10 +1,11 @@
 package com.testtask.minification.model;
 
+import lombok.Builder;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-
+@Builder
 @Entity
 @Table(name = "ACTIVITY")
 public class Activity {

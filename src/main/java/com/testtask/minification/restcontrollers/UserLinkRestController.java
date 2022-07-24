@@ -20,8 +20,8 @@ public class UserLinkRestController {
 
     @PostMapping(value = "/link/{oldId}")
     @ResponseBody
-    public UserLinkDTO update(@RequestBody UserLinkDTO userLinkDTONew,@PathVariable int oldId) {
-        return userLinkService.update(oldId,userLinkDTONew);
+    public UserLinkDTO update(@RequestBody UserLinkDTO userLinkDTONew, @PathVariable int oldId) {
+        return userLinkService.update(oldId, userLinkDTONew);
     }
 
     @DeleteMapping(value = "/link")

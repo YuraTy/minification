@@ -29,8 +29,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
 @AutoConfigureMockMvc
 class ActivityRestControllerTest {
@@ -44,31 +42,37 @@ class ActivityRestControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Test
-    void allTransitions() throws Exception {
-        UserLinkDTO testUserLinkDTO = UserLinkDTO.builder()
+    private UserLinkDTO getTestUserDTO() {
+        return UserLinkDTO.builder()
                 .activation(true)
                 .id(1)
                 .endData(LocalDate.parse("2022-07-27"))
                 .originalURL("https://habr.com/ru/post/678542/")
                 .shortURL("http://localhost:8080/WE78de")
                 .build();
-        ActivityDTO testActivityDTO = ActivityDTO.builder()
-                .userLinkDTO(testUserLinkDTO)
+    }
+
+    private ActivityDTO getTestActivityDTO() {
+        return ActivityDTO.builder()
+                .userLinkDTO(getTestUserDTO())
                 .transitionDate(LocalDateTime.now())
                 .id(2)
                 .browser("Chrome 10")
-                .referer("https://habr.com")
+                .referer("habr.com")
                 .ip("192.167.0.104")
                 .build();
+    }
+
+    @Test
+    void allTransitions() throws Exception {
         List<ActivityDTO> testList = new ArrayList<>();
-        testList.add(testActivityDTO);
-        Mockito.when(userLinkService.findByShortURL(Mockito.any())).thenReturn(testUserLinkDTO);
+        testList.add(getTestActivityDTO());
+        Mockito.when(userLinkService.findByShortURL(Mockito.any())).thenReturn(getTestUserDTO());
         Mockito.when(activityService.findByUserLinkId(Mockito.any())).thenReturn(testList);
 
         String uri = "/api/transitions/WE78de";
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get(uri)
-                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andReturn();
 
         String content = mvcResult.getResponse().getContentAsString();
@@ -80,20 +84,75 @@ class ActivityRestControllerTest {
 
         Map<String, String> actualList = mapFromJson(content, Map.class);
         Assertions.assertEquals(mapTest, actualList);
-
-
     }
 
     @Test
-    void transitionsByURLAndDate() {
+    void transitionsByURLAndDate() throws Exception {
+        List<ActivityDTO> testList = new ArrayList<>();
+        testList.add(getTestActivityDTO());
+        Mockito.when(userLinkService.findByShortURL(Mockito.any())).thenReturn(getTestUserDTO());
+        Mockito.when(activityService.findByDateAndUserLinkId(Mockito.any())).thenReturn(testList);
+
+        String uri = "/api/transitions-shorturl-date/WE78de/2022-07-22T18:22:00";
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get(uri)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andReturn();
+
+        String content = mvcResult.getResponse().getContentAsString();
+        int status = mvcResult.getResponse().getStatus();
+        Assertions.assertEquals(200, status);
+
+        Map<String, String> mapTest = new HashMap<>();
+        mapTest.put("amount-transitions-shorturl-date", String.valueOf(1));
+
+        Map<String, String> actualList = mapFromJson(content, Map.class);
+        Assertions.assertEquals(mapTest, actualList);
     }
 
     @Test
-    void transitionsByShortURLAndBrowser() {
+    void transitionsByShortURLAndBrowser() throws Exception {
+        List<ActivityDTO> testList = new ArrayList<>();
+        testList.add(getTestActivityDTO());
+        Mockito.when(userLinkService.findByShortURL(Mockito.any())).thenReturn(getTestUserDTO());
+        Mockito.when(activityService.findByBrowserAndUserLinkId(Mockito.any())).thenReturn(testList);
+
+        String uri = "/api/transitions-shorturl-browser/WE78de/Chrome 10";
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get(uri)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andReturn();
+
+        String content = mvcResult.getResponse().getContentAsString();
+        int status = mvcResult.getResponse().getStatus();
+        Assertions.assertEquals(200, status);
+
+        Map<String, String> mapTest = new HashMap<>();
+        mapTest.put("amount-transitions-shorturl-browser", String.valueOf(1));
+
+        Map<String, String> actualList = mapFromJson(content, Map.class);
+        Assertions.assertEquals(mapTest, actualList);
     }
 
     @Test
-    void transitionByShortURLAndReferer() {
+    void transitionByShortURLAndReferer() throws Exception {
+        List<ActivityDTO> testList = new ArrayList<>();
+        testList.add(getTestActivityDTO());
+        Mockito.when(userLinkService.findByShortURL(Mockito.any())).thenReturn(getTestUserDTO());
+        Mockito.when(activityService.findByRefererAndUserLinkId(Mockito.any())).thenReturn(testList);
+
+        String uri = "/api/transitions-shorturl-referer/WE78de/habr.com";
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get(uri)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andReturn();
+
+        String content = mvcResult.getResponse().getContentAsString();
+        int status = mvcResult.getResponse().getStatus();
+        Assertions.assertEquals(200, status);
+
+        Map<String, String> mapTest = new HashMap<>();
+        mapTest.put("amount-transitions-shorturl-referer", String.valueOf(1));
+
+        Map<String, String> actualList = mapFromJson(content, Map.class);
+        Assertions.assertEquals(mapTest, actualList);
     }
 
     protected String mapToJson(Object obj) throws JsonProcessingException {

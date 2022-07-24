@@ -5,10 +5,13 @@ import com.testtask.minification.dto.UserLinkDTO;
 import com.testtask.minification.services.ActivityService;
 import com.testtask.minification.services.UserLinkService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -33,15 +36,15 @@ public class ActivityRestController {
 
     @GetMapping(value = "/transitions-shorturl-date/{shortURL}/{dataTransition}")
     @ResponseBody
-    public Map<String, String> transitionsByURLAndDate(@PathVariable String shortURL, @PathVariable LocalDateTime dataTransition) {
+    public Map<String, String> transitionsByURLAndDate(@PathVariable String shortURL, @PathVariable("dataTransition") String dataTransition) {
         UserLinkDTO userLinkDTO = userLinkService.findByShortURL(shortURL);
         int countTransitions = activityService.findByDateAndUserLinkId(ActivityDTO.builder()
                         .userLinkDTO(userLinkDTO)
-                        .transitionDate(dataTransition)
+                        .transitionDate(LocalDateTime.parse(dataTransition,DateTimeFormatter.ISO_DATE_TIME))
                         .build())
                 .size();
         Map<String, String> mapForJson = new HashMap<>();
-        mapForJson.put("allTransitionsByShortURLAndDate", String.valueOf(countTransitions));
+        mapForJson.put("amount-transitions-shorturl-date", String.valueOf(countTransitions));
         return mapForJson;
     }
 

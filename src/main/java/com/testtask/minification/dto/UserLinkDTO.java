@@ -1,6 +1,7 @@
 package com.testtask.minification.dto;
 
 import lombok.Builder;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
@@ -13,6 +14,7 @@ public class UserLinkDTO {
 
     private String shortURL;
 
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDate endData;
 
     private boolean activation;
@@ -65,5 +67,22 @@ public class UserLinkDTO {
 
     public void setActivation(boolean activation) {
         this.activation = activation;
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (!(obj instanceof UserLinkDTO))
+            return false;
+        UserLinkDTO userLinkDTO = (UserLinkDTO) obj;
+        return this.originalURL.equals(userLinkDTO.originalURL) && this.shortURL.equals(userLinkDTO.shortURL) && this.endData.equals(userLinkDTO.endData) && (this.activation == userLinkDTO.activation);
     }
 }
